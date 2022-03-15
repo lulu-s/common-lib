@@ -96,11 +96,11 @@ export function get_time_format(time_map, end_time) {
     if (len == 2) {
         hour = Math.floor(cur / 3600);
         min = Math.floor((cur % 3600) / 60);
-        sec = cur % 60;
+        sec = Math.floor(cur % 60);
         return add_zero(hour) + ":" + add_zero(min) + ":" + add_zero(sec);
     } else {
         min = Math.floor(cur / 60);
-        sec = cur % 60;
+        sec = Math.floor(cur % 60);
         return add_zero(min) + ":" + add_zero(sec);
     }
 }

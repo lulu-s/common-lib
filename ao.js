@@ -230,6 +230,26 @@ export function __obj_sum(obj, key){
     return sum;
   }
 
+// 获取url上的参数，例子 http://ip:port/index.html#w=333
+// 使用 configFromHash()['w']
+export function configFromHash() {
+    var h = location.hash;
+    if (!h) return {};
+    h = decodeURIComponent(h);
+    h = h.replace("#", "");
+    h = h.split(global['splitter'] || "&");
+    var obj = {};
+    for (var kv = 0; kv < h.length; kv++) {
+        var flag = h[kv].split("=");
+        if (flag.length == 1) {
+            obj[flag[0]] = true;
+        } else {
+            obj[flag[0]] = flag[1];
+        }
+    }
+    return obj;
+}
+
 
 
 // loop 循环, looperStart 开启循环模式, eased 递增
