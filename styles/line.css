@@ -1,0 +1,45 @@
+
+  .line-right-bottom {
+    position: absolute;
+    right: -225px;
+    bottom: -35px;
+    width: 100px;
+    height: 5px;
+    background: linear-gradient(to right, #fff, #0000000a);
+    transform: rotate(45deg);
+  }
+
+  .line-left-bottom {
+    position: absolute;
+    left: -151px;
+    bottom: -63px;
+    width: 180px;
+    height: 5px;
+    background: linear-gradient(to right, #0000000a, #fff);
+    transform: rotate(-45deg);
+  }
+  .line-right {
+    position: absolute;
+    left: 139px;
+    bottom: 0;
+    width: 100px;
+    height: 5px;
+    background: linear-gradient(to right, #fff, #0000000a);
+  }
+  .line-left {
+    position: absolute;
+    left: -209px;
+    bottom: 0px;
+    width: 210px;
+    height: 5px;
+    background: linear-gradient(to right, #0000000a, #fff);
+  }
+  .line-left-top {
+    position: absolute;
+    left: -153px;
+    bottom: 62px;
+    width: 180px;
+    height: 5px;
+    background: linear-gradient(to right, #0000000a, #fff);
+    transform: rotate(45deg);
+  }
