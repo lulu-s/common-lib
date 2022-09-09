@@ -104,3 +104,42 @@ export function get_time_format(time_map, end_time) {
         return add_zero(min) + ":" + add_zero(sec);
     }
 }
+
+
+
+// UTC时间转换任意时区时间
+// 世界时区表：https://www.bbkz.com/guide/index.php/%E4%B8%96%E7%95%8C%E5%90%84%E5%9C%8B%E6%99%82%E5%8D%80
+export function utcToOffset(utc_datetime, offset) {
+
+    // 转为正常的时间格式 年-月-日 时:分:秒
+    var T_pos = utc_datetime.indexOf('T');
+    var Z_pos = utc_datetime.indexOf('Z');
+    var year_month_day = utc_datetime.substr(0, T_pos);
+    var hour_minute_second = utc_datetime.substr(T_pos + 1, Z_pos - T_pos - 1);
+    var new_datetime = year_month_day + " " + hour_minute_second; // 2017-03-31 08:02:06
+
+    // 处理成为时间戳
+    timestamp = new Date(Date.parse(new_datetime));
+    timestamp = timestamp.getTime();
+    timestamp = timestamp / 1000;
+
+    // 增加 offset 个小时，例如 北京时间比utc时间多八个时区，offset = 8
+    var timestamp = parseInt(timestamp + offset * 60 * 60) * 1000;
+    return get_my_date(timestamp).time;
+}
+
+
+// 角度从度数转换为弧度数。
+export function degrees_to_radians(degrees) {
+    var pi = Math.PI;
+    return degrees * (pi / 180);
+}
+// degrees_to_radians(45) // 0.7853981633974483
+
+
+// JS判断字符串中，某个字符出现的次数 
+export function get_char_appear_len(str, char){
+  var len = str.split(char).length-1
+  return len;
+}
+// get_char_appear_len('abc#def#hig', '#') // 2
