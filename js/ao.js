@@ -115,6 +115,21 @@ export function initEvent() {
 // TODO js 常见操作
 
 
+// json To Base64
+export function jsonToBase64(object) {
+    const json = JSON.stringify(object);
+    return Buffer.from(json).toString("base64");
+}
+window.jsonToBase64 = jsonToBase64
+
+// base64 To Json
+export function base64ToJson(base64String) {
+    const json = Buffer.from(base64String, "base64").toString();
+    return JSON.parse(json);
+}
+window.base64ToJson = base64ToJson
+
+
 
 // 设置cookie
 export function setCookie(cname, cvalue, exdays) {
@@ -149,12 +164,20 @@ export function getScrollTop() {
 
 
 // 生成uuid
+// 方法1
 export function guid() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
 }
+// 方法2
+import { nanoid } from "nanoid";
+export function uuid() {
+    return nanoid();
+}
+
+
 
 // 校验手机号
 export function isPoneAvailable(tel) {

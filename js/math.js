@@ -1,5 +1,16 @@
+// delay函数 sleep(1000) 毫秒
+export function sleep(delay) {
+    var start = (new Date()).getTime();
+    while ((new Date()).getTime() - start < delay) {
+        // 使用  continue 实现；
+        continue;
+    }
+}
+
+
+
 // 转换日期
-export function get_my_date(str) {
+export function get_my_date(str = Date.now()) {
     var oDate = new Date(str),
         oYear = oDate.getFullYear(),
         oMonth = oDate.getMonth() + 1,
@@ -7,7 +18,16 @@ export function get_my_date(str) {
         oHour = oDate.getHours(),
         oMin = oDate.getMinutes(),
         oSen = oDate.getSeconds(),
-        oTime = oYear + '-' + add_zero(oMonth) + '-' + add_zero(oDay) + ' ' + add_zero(oHour) + ':' + add_zero(oMin) + ':' + add_zero(oSen);
+        oTime = oYear + '-' + add0(oMonth) + '-' + add0(oDay) + ' ' + add0(oHour) + ':' + add0(oMin) + ':' + add0(oSen);
+
+    var o12Time = oDate.toLocaleString('zh', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true
+    })
+
+    var oWeek = "日一二三四五六".charAt(oDate.getDay());
+
     //return oTime;
     return {
         years: oYear,
@@ -17,12 +37,29 @@ export function get_my_date(str) {
         minutes: oMin,
         seconds: oSen,
         time: oTime,
-        ms: oDate.getTime()
+        ms: oDate.getTime(),
+        time12: o12Time,
+        week: oWeek
     }
 }
 
+/**
+ * 时间戳 
+ * @returns 20230816115805 
+ */
+export function timestamp() {
+    var time = new Date();
+    var y = time.getFullYear();
+    var m = time.getMonth() + 1;
+    var d = time.getDate();
+    var h = time.getHours();
+    var mm = time.getMinutes();
+    var s = time.getSeconds();
+    return "" + y + add0(m) + add0(d) + add0(h) + add0(mm) + add0(s);
+}
+
 //补零操作
-export function add_zero(num) {
+export function add0(num) {
     if (parseInt(num) < 10) {
         num = '0' + num;
     }
@@ -30,16 +67,16 @@ export function add_zero(num) {
 }
 
 
-
 // 金钱符号，每三个数字间加,
 // add_comma(100000)
 // '100,000'
-export function add_comma(number) {
+export function add_comma(number, dec) {
     if (number && number != null) {
         number = String(number);
         var left = number.split(".")[0];
-        // right = number.split('.')[1];
-        // right = right ? (right.length >= 2 ? '.' + right.substr(0, 2) : '.' + right + '0' ) : '.00';
+        var right = number.split('.')[1];
+        right = right ? (right.length >= 1 ? '.' + right.substr(0, 2) : '.' + right + '0') : '';
+
         var temp = left
             .split("")
             .reverse()
@@ -52,7 +89,7 @@ export function add_comma(number) {
                 .split("")
                 .reverse()
                 .join("")
-        ); // + right;
+        ) + (dec ? right : '');
     } else if (number === 0) {
         return "0.00";
     } else {
@@ -97,11 +134,11 @@ export function get_time_format(time_map, end_time) {
         hour = Math.floor(cur / 3600);
         min = Math.floor((cur % 3600) / 60);
         sec = Math.floor(cur % 60);
-        return add_zero(hour) + ":" + add_zero(min) + ":" + add_zero(sec);
+        return add0(hour) + ":" + add0(min) + ":" + add0(sec);
     } else {
         min = Math.floor(cur / 60);
         sec = Math.floor(cur % 60);
-        return add_zero(min) + ":" + add_zero(sec);
+        return add0(min) + ":" + add0(sec);
     }
 }
 
@@ -138,8 +175,46 @@ export function degrees_to_radians(degrees) {
 
 
 // JS判断字符串中，某个字符出现的次数 
-export function get_char_appear_len(str, char){
-  var len = str.split(char).length-1
-  return len;
+export function get_char_appear_len(str, char) {
+    var len = str.split(char).length - 1
+    return len;
 }
 // get_char_appear_len('abc#def#hig', '#') // 2
+
+
+
+/** 
+ *  判断一个点是否在圆的内部 
+ *  @param point  测试点坐标 
+ *  @param circle 圆心坐标 
+ *  @param r 圆半径 
+ *  返回true为真，false为假 
+ *  */
+function pointInsideCircle(point, circle, r) {
+    if (r === 0) return false
+    var dx = circle[0] - point[0]
+    var dy = circle[1] - point[1]
+    return dx * dx + dy * dy <= r * r
+}
+
+
+
+/** 
+ *  判断一个点是否在多边形内部 
+ *  @param points 多边形坐标集合 
+ *  @param testPoint 测试点坐标 
+ *  返回true为真，false为假 
+ *  */
+function insidePolygon(points, testPoint) {
+    var x = testPoint[0], y = testPoint[1];
+    var inside = false;
+    for (var i = 0, j = points.length - 1; i < points.length; j = i++) {
+        var xi = points[i][0], yi = points[i][1];
+        var xj = points[j][0], yj = points[j][1];
+
+        var intersect = ((yi > y) != (yj > y))
+            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
+}
