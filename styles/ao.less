@@ -1,0 +1,25 @@
+
+.shiny-text {
+    -webkit-mask-image: linear-gradient(70deg, white 50%, #ffffff33 60%, white 70%);
+    -webkit-mask-size: 200%;
+    -webkit-mask-repeat: repeat;
+    animation: shine 5.5s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+}
+
+@keyframes shine {
+    0% {
+        -webkit-mask-position: 200% 0;
+    }
+
+    30% {
+        -webkit-mask-position: 200% 0;
+    }
+
+    80% {
+        -webkit-mask-position: 0% 0;
+    }
+
+    100% {
+        -webkit-mask-position: 0% 0;
+    }
+}

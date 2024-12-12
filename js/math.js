@@ -1,3 +1,49 @@
+
+// 根据经纬度计算距离，参数分别为第一点的纬度，经度；第二点的纬度，经度
+function rad(d) {
+    return d * Math.PI / 180.0;
+}
+function getDistances(lat1, lng1, lat2, lng2) {
+
+    var radLat1 = rad(lat1);
+    var radLat2 = rad(lat2);
+    var a = radLat1 - radLat2;
+    var b = rad(lng1) - rad(lng2);
+    var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+        Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+    s = s * 6378.137; // EARTH_RADIUS;
+    // 输出为公里
+    s = Math.round(s * 10000) / 10000;
+
+    var distance = s;
+    var distance_str = "";
+
+    if (parseInt(distance) >= 1) {
+        // distance_str = distance.toFixed(1) + "km";
+        distance_str = distance.toFixed(2) + "km";
+    } else {
+        // distance_str = distance * 1000 + "m";
+        distance_str = (distance * 1000).toFixed(2) + "m";
+    }
+
+    //s=s.toFixed(4);
+
+    // console.info('距离是', s);
+    // console.info('距离是', distance_str);
+    // return s;
+
+    //小小修改，这里返回对象
+    let objData = {
+        distance: distance,
+        distance_str: distance_str
+    }
+    return objData
+}
+
+
+
+
+
 // delay函数 sleep(1000) 毫秒
 export function sleep(delay) {
     var start = (new Date()).getTime();
@@ -6,6 +52,57 @@ export function sleep(delay) {
         continue;
     }
 }
+
+// js：秒转换为小时分钟秒格式
+// https://blog.csdn.net/weixin_43566662/article/details/127478102
+function formatTime(time) {
+
+    var hours = Math.floor(time / 3600);
+
+    var minutes = Math.floor(Math.floor(time % 3600) / 60);
+
+    var seconds = Math.floor(time % 60);
+
+    var h = hours.toString().length === 1 ? `0${hours}` : hours;
+
+    var m = minutes.toString().length === 1 ? `0${minutes}` : minutes;
+
+    var s = seconds.toString().length === 1 ? `0${seconds}` : seconds;
+
+    return `${h} 小时 ${m} 分钟 ${s} 秒`;
+
+}
+
+
+// 十二时辰
+export function get_hour12(hour, minute, seconds) {
+    // 十二时辰按照地支，十二属相排列
+    let tzArr = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
+    // 十二时辰对应
+    let sdArr = ['夜半', '鸡鸣', '平旦', '日出', '食时', '隅中', '日平', '日昳', '晡时', '日入', '黄昏', '人定']
+    // 一个时辰为八刻
+    let skArr = ['一', '二', '三', '四', '五', '六', '七', '八']
+
+    // 判断时刻
+    var sk = ''
+    var tz = tzArr[parseInt(hour / 2)] + '时';
+    var sd = sdArr[parseInt(hour / 2)];
+    if (hour % 2 === 0) {
+        sk += skArr[parseInt(minute / 15)]
+    } else if (hour % 2 === 1) {
+        sk += skArr[parseInt(minute / 15) + 4]
+    }
+    sk += '刻'
+    var shichenStr = `${tz}（${sd}）${sk}`
+    return {
+        tz,
+        sd,
+        sk,
+        shichenStr
+    }
+
+}
+
 
 
 
@@ -30,17 +127,47 @@ export function get_my_date(str = Date.now()) {
 
     //return oTime;
     return {
-        years: oYear,
-        months: oMonth,
-        days: oDay,
-        hours: oHour,
-        minutes: oMin,
+        year: oYear,
+        month: oMonth,
+        day: oDay,
+        hour: oHour,
+        minute: oMin,
         seconds: oSen,
         time: oTime,
         ms: oDate.getTime(),
         time12: o12Time,
-        week: oWeek
+        week: oWeek,
+        today: oYear + '-' + oMonth + '-' + oDay
     }
+}
+
+
+// 天干地支
+// https://blog.51cto.com/liuhao9999/5089789
+export function getDayGanZhiByDate(year, month, day) {
+    //  1900 3  1  癸酉
+    var date = new Date();
+    date.setFullYear(1900);
+    date.setMonth(2);
+    date.setDate(1);
+    date.setHours(12);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
+    var date1 = new Date();
+    date1.setFullYear(year);
+    date1.setMonth(month - 1);
+    date1.setDate(day);
+    date1.setHours(12)
+    date1.setMinutes(0)
+    date1.setSeconds(0)
+    date1.setMilliseconds(0)
+    var days = Math.round((date1.getTime() - date.getTime()) / 1000 / 60 / 60 / 24)
+    console.log("days----", days)
+    var tianGan = ["癸", "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬"]
+    var diZhi = ["酉", "戌", "亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申"]
+    var ganZhi = tianGan[days % 10] + diZhi[days % 12];
+    return ganZhi
 }
 
 /**
@@ -144,8 +271,24 @@ export function get_time_format(time_map, end_time) {
 
 
 
+// 时间 秒 转 00:00:00
+// formatTime(10)
+// '00:10'
+export function formatTime(millisecond) {
+    // 转换为式分秒
+    let h = parseInt(time / 60 / 60 % 24)
+    h = h < 10 ? '0' + h : h
+    let m = parseInt(time / 60 % 60)
+    m = m < 10 ? '0' + m : m
+    let s = parseInt(time % 60)
+    s = s < 10 ? '0' + s : s
+    // 作为返回值返回
+    return `${h}:${m}:${s}` //[h, m, s]
+}
+
 // UTC时间转换任意时区时间
 // 世界时区表：https://www.bbkz.com/guide/index.php/%E4%B8%96%E7%95%8C%E5%90%84%E5%9C%8B%E6%99%82%E5%8D%80
+// 使用：utcToOffset(new Date().toISOString(), 8);
 export function utcToOffset(utc_datetime, offset) {
 
     // 转为正常的时间格式 年-月-日 时:分:秒

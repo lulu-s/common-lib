@@ -1,4 +1,7 @@
 
+
+
+
 // 手机端常见操作
 export function initEvent() {
 
@@ -115,6 +118,138 @@ export function initEvent() {
 // TODO js 常见操作
 
 
+// 模糊查询
+// list：需查询数组，keyWords：关键字数组
+export function selectMatchItems(lists, keyWords) {
+    let resArr = [];
+
+    lists.filter((item) => {
+      var status = false;
+      keyWords.find((keyWord) => {
+        for (let i in item) {
+          if (Array.isArray(item[i])) {
+            var res = item[i].find((v) => v.indexOf(keyWord) >= 0);
+            if (res) {
+              status = true;
+              break;
+            }
+          } else if (typeof item[i] == "number") {
+            var copy = item[i] + "";
+            if (copy.indexOf(keyWord) >= 0) {
+              status = true;
+              break;
+            }
+          } else if (item[i].indexOf(keyWord) >= 0) {
+            status = true;
+            break;
+          }
+        }
+        if (status) return;
+      });
+      if (status) resArr.push(item);
+    });
+    return resArr;
+  }
+
+/* 根据后缀判断文件类型 */
+export function getFileType(fileName) {
+	let suffix = ''; // 后缀获取
+	let result = ''; // 获取类型结果
+	if (fileName) {
+		const flieArr = fileName.split('.'); // 根据.分割数组
+		suffix = flieArr[flieArr.length - 1]; // 取最后一个
+	}
+	if (!suffix) return false; // fileName无后缀返回false
+	suffix = suffix.toLocaleLowerCase(); // 将后缀所有字母改为小写方便操作
+	// 匹配图片
+	const imgList = ['png', 'jpg', 'jpeg', 'bmp', 'gif', 'svg']; // 图片格式
+	result = imgList.find(item => item === suffix);
+	if (result) return 'image';
+	// 匹配txt
+	const txtList = ['txt'];
+	result = txtList.find(item => item === suffix);
+	if (result) return 'txt';
+	// 匹配excel
+	const excelList = ['xls', 'xlsx'];
+	result = excelList.find(item => item === suffix);
+	if (result) return 'excel';
+	// 匹配word
+	const wordList = ['doc', 'docx'];
+	result = wordList.find(item => item === suffix);
+	if (result) return 'word';
+	// 匹配pdf
+	const pdfList = ['pdf'];
+	result = pdfList.find(item => item === suffix);
+	if (result) return 'pdf';
+	// 匹配ppt
+	const pptList = ['ppt', 'pptx'];
+	result = pptList.find(item => item === suffix);
+	if (result) return 'ppt';
+	// 匹配zip
+	const zipList = ['rar', 'zip', '7z'];
+	result = zipList.find(item => item === suffix);
+	if (result) return 'zip';
+	// 匹配视频
+	const videoList = ['mp4', 'm2v', 'mkv', 'rmvb', 'wmv', 'avi', 'flv', 'mov', 'm4v', 'webm'];
+	result = videoList.find(item => item === suffix);
+	if (result) return 'video';
+	// 匹配音频
+	const radioList = ['mp3', 'wav', 'wmv'];
+	result = radioList.find(item => item === suffix);
+	if (result) return 'radio';
+	// 其他文件类型
+	return 'other';
+}
+
+// 递归查找字符串并替换
+function recursiveStr(obj, str) {
+    for (var key in obj) {
+        if (typeof obj[key] === 'string') {
+            console.log(obj[key]);
+            obj[key] = obj[key].replace(str, randomString(8));
+        } else if (typeof obj[key] === 'object') {
+            recursiveStr(obj[key], str);
+        }
+    }
+}
+
+recursiveStr(item, '$random');
+console.log(item);
+
+// 随机字符串
+function randomString(len) {
+    len = len || 32;
+    var $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';
+    var maxPos = $chars.length;
+    var pwd = '';
+    for (var i = 0; i < len; i++) {
+        pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+    }
+    return pwd;
+}
+
+// 获取file
+export function asyncFileReader(file) {
+    return new Promise((resolve, reject) => {
+        var fr = new FileReader();
+        fr.onload = resolve; // CHANGE to whatever function you want which would eventually call resolve
+        fr.onerror = reject;
+        fr.readAsDataURL(file);
+    });
+}
+
+
+// 获取img
+export function asyncLoadImg(file) {
+    return new Promise((resolve, reject) => {
+        var image = new Image();
+        image.src = file;
+        image.onload = resolve(image);
+        image.onerror = reject;
+    });
+}
+
+
 // json To Base64
 export function jsonToBase64(object) {
     const json = JSON.stringify(object);
@@ -211,47 +346,47 @@ export function getStyle(obj, attr) {
 export function check_obj_length(obj, key, number) {
     number = number || 1;
     if (JSON.stringify(obj) !== "{}" && obj[key].length >= number) {
-      return true;
+        return true;
     } else {
-      return false;
+        return false;
     }
-  }
+}
 
-  // 替换占位符
-export function __replace_placeholder(content, old_replace, new_replace){
-    if(!content) return null;
+// 替换占位符
+export function __replace_placeholder(content, old_replace, new_replace) {
+    if (!content) return null;
     let tem = content.split(old_replace);
     let str = "";
-    for(let i = 0 ; i < tem.length; i++){
-      if(i == tem.length - 1){
-        str += tem[i]
-        break;
-      }
-      str += tem[i] + new_replace
+    for (let i = 0; i < tem.length; i++) {
+        if (i == tem.length - 1) {
+            str += tem[i]
+            break;
+        }
+        str += tem[i] + new_replace
     }
     return str;
-  }
-  
-  
+}
+
+
 
 // 判断对象数组的属性中是否包含重复的内容
-export function check_repeat(obj, key, text){
-    for(let i = 0; i < obj.length; i++){
-      if(obj[i][key] === text) return i;
+export function check_repeat(obj, key, text) {
+    for (let i = 0; i < obj.length; i++) {
+        if (obj[i][key] === text) return i;
     }
     return -1;
-  }
-  
-  
+}
+
+
 
 // 对象数组（属性参数）求和
-export function __obj_sum(obj, key){
+export function __obj_sum(obj, key) {
     let sum = 0;
-    obj.forEach((o)=>{
-      sum += o[key];
+    obj.forEach((o) => {
+        sum += o[key];
     })
     return sum;
-  }
+}
 
 // 获取url上的参数，例子 http://ip:port/index.html#w=333
 // 使用 configFromHash()['w']
