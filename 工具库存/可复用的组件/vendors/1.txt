@@ -1,0 +1,3 @@
+
+    window.loop_model = animator.initAnimators(assets.animation.data, group,
+        pipeline.camera, pipeline.scene, pipeline.renderer.renderer);

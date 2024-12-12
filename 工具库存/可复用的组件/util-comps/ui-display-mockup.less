@@ -1,0 +1,53 @@
+.ui-display-mockup {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    pointer-events: none;
+    opacity: 0;
+    transition: all .6s ease;
+
+    * {
+        pointer-events: none;
+    }
+
+    &.active {
+        opacity: 1;
+    }
+
+    .col {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        border-right: 10px solid #000;
+
+    }
+
+    .row {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border-bottom: 10px solid #000;
+    }
+
+    &.white {
+
+        .col {
+            border-color: #fff;
+        }
+
+        .row {
+            border-color: #fff;
+        }
+
+    }
+}
+
+
+.c-show-box-production .ui-display-mockup {
+    display: none !important;
+}
