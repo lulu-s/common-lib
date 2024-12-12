@@ -1,5 +1,5 @@
 
-// 发12下 下载所有音频文件
+// f12下 下载所有音频文件
 async function delay(time) {
     return new Promise((resolve) => {
         setTimeout(() => {
